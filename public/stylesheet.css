@@ -1,0 +1,17 @@
+body {
+    background-color: #c4f1f6;
+}
+ canvas{
+    width: 70%;
+    height: 70%;
+    display: block;
+    background: url(https://media1.giphy.com/media/UTkht9eZ4Ot68/source.gif) no-repeat center center;
+    background-size: cover;
+
+}
+h1 {
+    text-align: center;
+    font-family: Blenny;
+    color: steelblue;
+    font-size: xx-large;
+}
