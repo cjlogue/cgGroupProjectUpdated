@@ -104,24 +104,33 @@ const SnowBuddy = () => {
     birthdayHat.translateY(1);
 
 
-    // //3) No Hat -- make hat transparent
-    // const transparentHat = new THREE.Mesh(new THREE.ConeBufferGeometry(
-    //     0.5, 0.9, 15), birthdayHatColor);
-    //
-    // const hatArray = [];
-    // hatArray.push(topHat);
-    // hatArray.push(birthdayHat);
-    // hatArray.push(transparentHat);
-    //
-    // this.selectedHat = null; //???
-    // const hatNext = document.getElementById('#hatNext');
-    // hatNext.addEventListener("mousedown", getNextHat(hatArray));
-    //
-    // const getNextHat = () => {
-    //    const nextidx = hatArray.indexOf(this.selectedHat);
-    //    this.selectedHat = hatArray.value()
-    //
-    // }
+    const hatArray = [];
+    hatArray.push(topHat);
+    hatArray.push(birthdayHat);
+
+
+    let hatIndex = 1;
+    //let selectedHat;
+
+    const nextHat = document.getElementById('next')
+    if(nextHat) {
+        nextHat.addEventListener("mousedown", displayNextHat(hatArray, hatIndex));
+    }
+
+    const displayNextHat = (hatArray, hatIndex) => {
+        for (let i = 0; i < hatArray.length(); i++) {
+            if (i === hatIndex) {
+                hatArray.get(i).position.set(2, 1, 0) // move it to the right
+            }
+            else if (i === hatIndex + 1) {
+                hatArray.get(i + 1).position.set(0, 1, 0);  //move it to the left
+            }
+            else {
+                hatArray.get(i).translateX(2, 1, 0);
+            }
+        }
+        hatIndex = hatIndex + 1;
+    }
 
 
     //Group head
@@ -129,9 +138,8 @@ const SnowBuddy = () => {
     headGroup.add(headBall);
     headGroup.add(carrotNose);
     headGroup.add(buttonEyes);
-    //headGroup.add(topHat);
+    headGroup.add(topHat);
     headGroup.add(birthdayHat);
-    //headGroup.add(this.selectedHat);
 
 
 
@@ -234,6 +242,38 @@ const createFloor = () => {
     plane.rotateX(30);
 
     scene.add(plane);
+
+    const pineColor = new THREE.MeshPhongMaterial({
+        color: 0x2c713d});
+
+    const stickColor = new THREE.MeshPhongMaterial({
+        color: 0x73410c});
+
+    const pineTop = new THREE.Mesh(new THREE.ConeBufferGeometry(0.5, 1.3, 5), pineColor);
+    pineTop.translateY(0.8);
+
+    const pineMiddle = new THREE.Mesh(new THREE.ConeBufferGeometry(0.7, 1, 5), pineColor);
+    pineMiddle.translateY(0.2);
+
+    const pineBottom = new THREE.Mesh(new THREE.ConeBufferGeometry(0.9, 1, 5), pineColor);
+    pineBottom.translateY(-0.3);
+
+    const pineTrunk = new THREE.Mesh(new THREE.CylinderBufferGeometry(
+        0.1, 0.1, 1), stickColor);
+    pineTrunk.translateY(-0.6);
+
+    const pineTree = new THREE.Group();
+    pineTree.add(pineTop);
+    pineTree.add(pineMiddle);
+    pineTree.add(pineBottom);
+    pineTree.add(pineTrunk);
+
+
+    scene.add(pineTree);
+    pineTree.translateZ(-1.9);
+    pineTree.translateX(-4);
+
+
 }
 
 
@@ -251,6 +291,9 @@ function createLighting() {
 
     scene.add(directionalLight);
     scene.add(ambLight);
+
+
+
 }
 
 
