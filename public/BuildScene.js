@@ -1,6 +1,35 @@
 import * as THREE from './three.module.js';
 
+const displayNextHat =  (hatArray, hatIndex) => {
+    console.log("hit button " + hatIndex);
+    console.log("first hat " +  hatArray[0].uuid);
+    for (let i = 0; i < hatArray.length; i++) {
+        console.log(i);
+        if (i === hatIndex) {
+            console.log("before button " + hatArray[i].position.x);
+            hatArray[i].translateX(2); // move it to the right
+            console.log("after button " + hatArray[i].position.x);
+            console.log("last = " + hatArray[i].uuid);
+        }
+        //cycle back at the end of the array
+        else if ((i === hatIndex + 1) && (hatIndex + 1 === null)) {
+            hatArray[i + 1].position.set(0, 1, 0);  //move it to the left
+            console.log(hatArray[i + hatIndex]);
+            console.log("next = " + hatArray[i].uuid);
+        }
+        else {
+            hatArray[i].translateX(2, 1, 0);
+            console.log("other = " + hatArray[i].uuid);
+        }
+    }
+    hatIndex++;
+    //Do we need to render again?
+}
+
+
+let hatIndex = 0;
 // Create all elements of the Snow Buddy
+var hatArray = [];
 const SnowBuddy = () => {
 
     //Materials
@@ -78,13 +107,13 @@ const SnowBuddy = () => {
     //Hats
 
     // 1) Top Hat
-    const crown = new THREE.Mesh(new THREE.CylinderBufferGeometry(0.5, 0.5, 0.7), hatColor);
-    const brim = new THREE.Mesh(new THREE.CylinderBufferGeometry(0.7, 0.7, 0.1), hatColor);
+    var crown = new THREE.Mesh(new THREE.CylinderBufferGeometry(0.5, 0.5, 0.7), hatColor);
+    var brim = new THREE.Mesh(new THREE.CylinderBufferGeometry(0.7, 0.7, 0.1), hatColor);
     brim.translateY(-0.4);
-    const band = new THREE.Mesh(new THREE.CylinderBufferGeometry(0.52, 0.52, 0.3), redColor);
+    var band = new THREE.Mesh(new THREE.CylinderBufferGeometry(0.52, 0.52, 0.3), redColor);
     band.translateY(-0.3);
 
-    const topHat = new THREE.Group();
+    var topHat = new THREE.Group();
     topHat.add(crown);
     topHat.add(brim);
     topHat.add(band);
@@ -92,45 +121,45 @@ const SnowBuddy = () => {
 
 
     // 2) Birthday Hat
-    const coneHat = new THREE.Mesh(new THREE.ConeBufferGeometry(
-        0.5, 0.9, 15), materials);
-    const puffBall = new THREE.Mesh(new THREE.SphereBufferGeometry(
+    var coneHat = new THREE.Mesh(new THREE.ConeBufferGeometry(
+        0.5, 0.9, 15), birthdayHatColor);
+    var puffBall = new THREE.Mesh(new THREE.SphereBufferGeometry(
         0.12, 8, 8), birthdayPuff);
     puffBall.translateY(0.45);
 
-    const birthdayHat = new THREE.Group();
+    var birthdayHat = new THREE.Group();
     birthdayHat.add(coneHat);
     birthdayHat.add(puffBall);
     birthdayHat.translateY(1);
 
 
-    const hatArray = [];
-    hatArray.push(topHat);
-    hatArray.push(birthdayHat);
+    var cone = new THREE.Mesh(new THREE.ConeBufferGeometry(
+        0.5, 0.9, 15), carrotColor);
+    cone.translateY(1);
 
 
-    let hatIndex = 1;
+    hatArray[0] = topHat;
+    hatArray[1] = birthdayHat;
+    hatArray[2] = cone;
+    //hatArray.push(topHat);
+    //hatArray.push(birthdayHat);
+    //hatArray.push(cone);
+    console.log(hatArray[0]);
+    console.log(hatArray[1]);
+    console.log(hatArray[2]);
+
+    // this.hatIndex = 1;
     //let selectedHat;
 
     const nextHat = document.getElementById('next')
+    console.log("nextHat: "  + nextHat)
     if(nextHat) {
-        nextHat.addEventListener("mousedown", displayNextHat(hatArray, hatIndex));
+        nextHat.addEventListener("click", () => displayNextHat(hatArray, hatIndex));
+        console.log(hatArray.length);
+
+
     }
 
-    const displayNextHat = (hatArray, hatIndex) => {
-        for (let i = 0; i < hatArray.length(); i++) {
-            if (i === hatIndex) {
-                hatArray.get(i).position.set(2, 1, 0) // move it to the right
-            }
-            else if (i === hatIndex + 1) {
-                hatArray.get(i + 1).position.set(0, 1, 0);  //move it to the left
-            }
-            else {
-                hatArray.get(i).translateX(2, 1, 0);
-            }
-        }
-        hatIndex = hatIndex + 1;
-    }
 
 
     //Group head
@@ -140,6 +169,7 @@ const SnowBuddy = () => {
     headGroup.add(buttonEyes);
     headGroup.add(topHat);
     headGroup.add(birthdayHat);
+    headGroup.add(cone);
 
 
 
