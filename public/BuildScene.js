@@ -168,7 +168,7 @@ const SnowBuddy = () => {
     const nextHat = document.getElementById('next')
     console.log("nextHat: "  + nextHat)
     if(nextHat) {
-        nextHat.addEventListener("click", () => displayNextHat(hatArray, hatIndex)); //, drawScene());
+        nextHat.addEventListener("click", () => displayNextHat(hatArray, hatIndex), drawScene());
         console.log(hatArray.length);
 
 
@@ -369,20 +369,20 @@ const main = () => {
     scene.add(camera);
 
     //RENDER
-    // var drawScene = () => {
-    //
-    //     renderer.render(scene, camera);
-    //     requestAnimationFrame(drawScene)
-    // }
+    var drawScene = () => {
+
+        renderer.render(scene, camera);
+        requestAnimationFrame(drawScene)
+    }
 
     createFloor();
     SnowBuddy();
     createLighting();
 
-    //drawScene();
+    drawScene();
 
 
-   renderer.render(scene, camera);
+   //renderer.render(scene, camera);
 }
 
 // START
