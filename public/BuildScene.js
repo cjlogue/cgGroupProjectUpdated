@@ -1,13 +1,13 @@
 import * as THREE from './three.module.js';
 
-const displayNextHat =  (hatArray, hatIndex) => {
+const displayNextHat = (hatArray, hatIndex) => {
     console.log("hit button " + hatIndex);
     console.log("first hat " +  hatArray[0].uuid);
     for (let i = 0; i < hatArray.length; i++) {
         console.log(i);
         if (i === hatIndex) {
             console.log("before button " + hatArray[i].position.x);
-            hatArray[i].translateX(2); // move it to the right
+            hatArray[i].translateX(30); // move it to the right
             console.log("after button " + hatArray[i].position.x);
             console.log("last = " + hatArray[i].uuid);
         }
@@ -23,8 +23,22 @@ const displayNextHat =  (hatArray, hatIndex) => {
         }
     }
     hatIndex++;
+   // updateScene(updateStatus);
     //Do we need to render again?
 }
+
+
+
+// let updateStatus;
+//
+// const updateScene = (updateStatus) => {
+//     updateStatus = true;
+// }
+//
+// const resetScene = (updateStatus) => {
+//     updateStatus = false;
+// }
+
 
 
 let hatIndex = 0;
@@ -154,7 +168,7 @@ const SnowBuddy = () => {
     const nextHat = document.getElementById('next')
     console.log("nextHat: "  + nextHat)
     if(nextHat) {
-        nextHat.addEventListener("click", () => displayNextHat(hatArray, hatIndex));
+        nextHat.addEventListener("click", () => displayNextHat(hatArray, hatIndex)); //, drawScene());
         console.log(hatArray.length);
 
 
@@ -326,7 +340,7 @@ function createLighting() {
 
 }
 
-
+let renderer;
 let scene;
 const main = () => {
 
@@ -354,16 +368,30 @@ const main = () => {
     camera.position.set(0, 0.3, 16); //move the camera a back
     scene.add(camera);
 
+    //RENDER
+    // var drawScene = () => {
+    //
+    //     renderer.render(scene, camera);
+    //     requestAnimationFrame(drawScene)
+    // }
+
     createFloor();
     SnowBuddy();
     createLighting();
 
-    //RENDER
-    renderer.render(scene, camera)
+    //drawScene();
+
+
+   renderer.render(scene, camera);
 }
 
 // START
 main();
+
+
+
+
+
 
 
 
