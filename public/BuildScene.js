@@ -1,35 +1,36 @@
 import * as THREE from './three.module.js';
+import {BoxBufferGeometry} from "./three.module.js";
 
-const displayNextHat =  (hatArray, hatIndex) => {
-    console.log("hit button " + hatIndex);
+const displayNextHat =  (hatArray, hatIdx) => {
+    console.log("HatIdx = " + hatIndex);
     console.log("first hat " +  hatArray[0].uuid);
+
     for (let i = 0; i < hatArray.length; i++) {
-        console.log(i);
-        if (i === hatIndex) {
-            console.log("before button " + hatArray[i].position.x);
-            hatArray[i].translateX(2); // move it to the right
-            console.log("after button " + hatArray[i].position.x);
-            console.log("last = " + hatArray[i].uuid);
+
+        //How to wrap back around to front of list?
+        // if (hatArray.length + 1 === hatIdx + 1) {
+        //     i = 0;
+        // }
+        if (hatArray.length === hatIdx + 1) {
+            break;
         }
-        //cycle back at the end of the array
-        else if ((i === hatIndex + 1) && (hatIndex + 1 === null)) {
-            hatArray[i + 1].position.set(0, 1, 0);  //move it to the left
-            console.log(hatArray[i + hatIndex]);
-            console.log("next = " + hatArray[i].uuid);
+        if (i === hatIdx) {
+            hatArray[i].translateX(8);
         }
-        else {
-            hatArray[i].translateX(2, 1, 0);
-            console.log("other = " + hatArray[i].uuid);
+        if (i === hatIdx + 1) {
+            hatArray[i].translateX(-8);
         }
     }
-    hatIndex++;
-    //Do we need to render again?
+    hatIndex = hatIdx + 1;
+
 }
 
 
-let hatIndex = 0;
+var hatIndex;
+var eyeIndex;
 // Create all elements of the Snow Buddy
 var hatArray = [];
+var eyeArray = [];
 const SnowBuddy = () => {
 
     //Materials
@@ -48,6 +49,15 @@ const SnowBuddy = () => {
     const stickColor = new THREE.MeshPhongMaterial({
         color: 0x73410c});
 
+    const sombreroColor = new THREE.MeshPhongMaterial({
+        color: 0xd9c48b});
+
+    const snowHatColor = new THREE.MeshPhongMaterial({
+        color: 0x8fa1d9});
+
+    const snowHatDetail = new THREE.MeshPhongMaterial({
+        color: 0x48569c});
+
     const birthdayHatColor = new THREE.MeshPhongMaterial({
         color: 0xff9Bbf3});
 
@@ -57,8 +67,9 @@ const SnowBuddy = () => {
     const loader = new THREE.TextureLoader();
     const birthdayHatTexture = new THREE.MeshBasicMaterial(  {map: loader.load("./bdayHat2.jpg")});
     const HatTexture = new THREE.MeshBasicMaterial(  {map: loader.load("./WinterBirthdayHat.jpg")});
+    const blueDots = new THREE.MeshBasicMaterial({map: loader.load("./BlueDots.bmp")});
 
-    const materials = [birthdayHatTexture, HatTexture];
+    const materials = [birthdayHatTexture, HatTexture, blueDots];
 
 
 
@@ -102,6 +113,24 @@ const SnowBuddy = () => {
     //buttonEyes.translateY(0.5);
     buttonEyes.translateZ(1.5);
 
+    // 2) Glasses
+    var leftGlass = new THREE.Mesh(new THREE.CylinderBufferGeometry(0.15, 0.15, 0.01), hatColor);
+    leftGlass.translateX(-0.3);
+    leftGlass.rotateX(90);
+    var rightGlass = new THREE.Mesh(new THREE.CylinderBufferGeometry(0.15, 0.15, 0.01), hatColor);
+    rightGlass.translateX(0.3);
+    rightGlass.rotateX(90);
+    var connector = new THREE.Mesh(new THREE.BoxBufferGeometry(0.4, 0.05, 0.02), hatColor);
+
+    const sunGlasses = new THREE.Group();
+    sunGlasses.add(leftGlass);
+    sunGlasses.add(rightGlass);
+    sunGlasses.add(connector);
+    sunGlasses.translateZ(1);
+
+    eyeArray[0] = buttonEyes;
+    eyeArray[1] = sunGlasses; 
+
 
 
     //Hats
@@ -118,6 +147,7 @@ const SnowBuddy = () => {
     topHat.add(brim);
     topHat.add(band);
     topHat.translateY(1);
+    //topHat.translateX(4); START ON HEAD FIRST
 
 
     // 2) Birthday Hat
@@ -131,45 +161,93 @@ const SnowBuddy = () => {
     birthdayHat.add(coneHat);
     birthdayHat.add(puffBall);
     birthdayHat.translateY(1);
+    birthdayHat.translateX(8);
 
 
-    var cone = new THREE.Mesh(new THREE.ConeBufferGeometry(
-        0.5, 0.9, 15), carrotColor);
-    cone.translateY(1);
+    //3) Sombrero
+    var sombrero = new THREE.Mesh(new THREE.CylinderBufferGeometry(0.3, 0.6, 0.6), sombreroColor);
+    sombrero.translateY(0.8);
+    var sombreroBrim = new THREE.Mesh(new THREE.CylinderBufferGeometry(1.5, 1.5, 0.1), sombreroColor);
+    sombreroBrim.translateY(0.5);
 
+    const sombreroHat = new THREE.Group();
+    sombreroHat.add(sombrero);
+    sombreroHat.add(sombreroBrim);
+    sombreroHat.translateX(8);
+
+
+    //4) Snow Hat
+    var snowHat = new THREE.Mesh(new THREE.CylinderBufferGeometry(
+        0.3, 0.6, 0.6), snowHatColor);
+    snowHat.translateY(0.7);
+    var roundHatTop = new THREE.Mesh(new THREE.SphereBufferGeometry(
+        0.3, 8, 8), snowHatColor);
+    roundHatTop.translateY(0.9);
+    var snowHatFold = new THREE.Mesh(
+        new THREE.CylinderBufferGeometry(0.6, 0.7, 0.2), snowHatDetail);
+    snowHatFold.translateY(0.4);
+    var pomPom = new THREE.Mesh(new THREE.SphereBufferGeometry(
+        0.15, 8, 8), snowHatDetail);
+    pomPom.translateY(1.25);
+
+    const snowHatGroup = new THREE.Group();
+    snowHatGroup.add(snowHat);
+    snowHatGroup.add(snowHatFold);
+    snowHatGroup.add(roundHatTop);
+    snowHatGroup.add(pomPom);
+    snowHatGroup.translateX(8);
+
+
+    // 5) Graduation Cap
+    var graduationCap = new THREE.Mesh(new THREE.CylinderBufferGeometry(
+        0.5, 0.65, 0.5), hatColor);
+    graduationCap.translateY(0.6);
+    var graduationBrim = new THREE.Mesh(new BoxBufferGeometry(1.6, 0.1, 1.6), hatColor);
+    graduationBrim.translateY(0.9);
+    graduationBrim.rotateY(90);
+
+    const graduationCapGroup = new THREE.Group();
+    graduationCapGroup.add(graduationCap);
+    graduationCapGroup.add(graduationBrim);
+    graduationCapGroup.translateX(8);
 
     hatArray[0] = topHat;
     hatArray[1] = birthdayHat;
-    hatArray[2] = cone;
-    //hatArray.push(topHat);
-    //hatArray.push(birthdayHat);
-    //hatArray.push(cone);
-    console.log(hatArray[0]);
-    console.log(hatArray[1]);
-    console.log(hatArray[2]);
-
-    // this.hatIndex = 1;
-    //let selectedHat;
-
-    const nextHat = document.getElementById('next')
-    console.log("nextHat: "  + nextHat)
-    if(nextHat) {
-        nextHat.addEventListener("click", () => displayNextHat(hatArray, hatIndex));
-        console.log(hatArray.length);
-
-
-    }
+    hatArray[2] = sombreroHat;
+    hatArray[3] = snowHatGroup;
+    hatArray[4] = graduationCapGroup;
 
 
 
     //Group head
     const headGroup = new THREE.Group();
     headGroup.add(headBall);
+    //NOSE
     headGroup.add(carrotNose);
-    headGroup.add(buttonEyes);
+    //EYES
+    //headGroup.add(buttonEyes);
+    headGroup.add(sunGlasses);
+    //HATS
     headGroup.add(topHat);
     headGroup.add(birthdayHat);
-    headGroup.add(cone);
+    headGroup.add(sombreroHat);
+    headGroup.add(snowHatGroup);
+    headGroup.add(graduationCapGroup);
+
+
+
+    const nextHat = document.getElementById('nextHat')
+    console.log("nextHat: "  + nextHat)
+    if(nextHat) {
+        nextHat.addEventListener("click", () => displayNextHat(hatArray, hatIndex));
+        console.log(hatArray.length);
+
+    }
+
+
+
+
+
 
 
 
@@ -358,8 +436,17 @@ const main = () => {
     SnowBuddy();
     createLighting();
 
+    hatIndex = 0;
+    eyeIndex = 0;
+
     //RENDER
-    renderer.render(scene, camera)
+    var drawScene = () => {
+
+        renderer.render(scene, camera);
+        requestAnimationFrame(drawScene)
+    }
+
+    requestAnimationFrame(drawScene)
 }
 
 // START
