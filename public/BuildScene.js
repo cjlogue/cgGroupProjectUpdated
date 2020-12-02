@@ -1,4 +1,5 @@
 import * as THREE from './three.module.js';
+import {CylinderGeometry, PlaneGeometry} from "./three.module.js";
 
 const displayNextHat =  (hatArray, hatIndex) => {
     console.log("hit button " + hatIndex);
@@ -13,7 +14,7 @@ const displayNextHat =  (hatArray, hatIndex) => {
         }
         //cycle back at the end of the array
         else if ((i === hatIndex + 1) && (hatIndex + 1 === null)) {
-            hatArray[i + 1].position.set(0, 1, 0);  //move it to the left
+            hatArray[i + 1].position.set(0, 1, 50);  //move it to the left
             console.log(hatArray[i + hatIndex]);
             console.log("next = " + hatArray[i].uuid);
         }
@@ -54,6 +55,9 @@ const SnowBuddy = () => {
     const birthdayPuff = new THREE.MeshPhongMaterial({
         color: 0xdc57e2});
 
+    const mouthColor = new THREE.MeshBasicMaterial(
+        {color: 0x5c504b});
+
     const loader = new THREE.TextureLoader();
     const birthdayHatTexture = new THREE.MeshBasicMaterial(  {map: loader.load("./bdayHat2.jpg")});
     const HatTexture = new THREE.MeshBasicMaterial(  {map: loader.load("./WinterBirthdayHat.jpg")});
@@ -83,6 +87,67 @@ const SnowBuddy = () => {
     carrotNose.translateZ(1);
     carrotNose.translateY(-0.1);
     carrotNose.rotateX(90);
+
+
+    //Mouth:
+    //1) Standard Mouth
+    /*const curveOfMouth = new THREE.Mesh(new THREE.EllipseCurve(
+        0, 1.2, 20, 20, 0,
+        2 * Math.PI, false, 0));
+    /!*const pointsOfCurve = curveOfMouth.getPoints(50);
+    const geometry = new THREE.BufferGeometry().setFromPoints(pointsOfCurve);
+    const material = new THREE.LineBasicMaterial({
+        color: 0xff0000});
+    const mouth = new THREE.Line(geometry, material);*!/*/
+
+    //2) Cylinder Mouth
+    /*const cylindergeom = new THREE.CylinderGeometry(0.2, 0.2, 0.05, 0);
+
+    const cylinder = new THREE.Mesh(cylindergeom, mouthColor);
+    cylinder.rotation.x = Math.PI / 4;
+    cylinder.translateZ(1.5);
+    cylinder.translateY(0.95);*/
+    //cylinder.translateX(-0.3);
+
+    //3) small spheres together
+    const mouthGroup = new THREE.Group();
+    const sphere1 = new THREE.Mesh(new THREE.SphereBufferGeometry(
+        0.05, 4, 4), mouthColor);
+    sphere1.translateZ(1.5);
+    sphere1.translateY(-0.45);
+
+    const sphere2 = new THREE.Mesh(new THREE.SphereBufferGeometry(
+        0.05, 4, 4), mouthColor);
+    sphere2.translateZ(2.59);
+    sphere2.translateX(0.2)
+    sphere2.translateY(-0.45);
+
+    const sphere3 = new THREE.Mesh(new THREE.SphereBufferGeometry(
+        0.05, 4, 4), mouthColor);
+    sphere3.translateZ(2.59);
+    sphere3.translateX(-0.2)
+    sphere3.translateY(-0.45);
+
+
+    const sphere4 = new THREE.Mesh(new THREE.SphereBufferGeometry(
+        0.05, 4, 4), mouthColor);
+    sphere4.translateZ(4.5);
+    sphere4.translateX(0.3);
+    sphere4.translateY(-0.45);
+
+
+    const sphere5 = new THREE.Mesh(new THREE.SphereBufferGeometry(
+        0.05, 4, 4), mouthColor);
+    sphere5.translateZ(4.5);
+    sphere5.translateX(-0.3)
+    sphere5.translateY(-0.45);
+
+    mouthGroup.add(sphere1);
+    mouthGroup.add(sphere2);
+    mouthGroup.add(sphere3);
+    mouthGroup.add(sphere4);
+    mouthGroup.add(sphere5);
+
 
 
 
@@ -161,15 +226,36 @@ const SnowBuddy = () => {
     }
 
 
+    //Scarf
+
+    const neckPart = new THREE.Mesh(new CylinderGeometry(0.65, 0.65, 0.15), redColor);
+    neckPart.translateY(-0.55);
+    const materialCloth = new THREE.MeshBasicMaterial({color: 0xdc472c, side: THREE.DoubleSide});
+    const clothFlowingPart = new THREE.Mesh(new PlaneGeometry(0.3, 2), materialCloth);
+    clothFlowingPart.translateX(-1);
+    clothFlowingPart.translateY(-0.3);
+    clothFlowingPart.rotation.x = Math.PI/ 4;
+    clothFlowingPart.rotation.z = 180;
+    const scarf = new THREE.Group();
+    scarf.add(neckPart);
+    scarf.add(clothFlowingPart);
+
+
 
     //Group head
     const headGroup = new THREE.Group();
+
     headGroup.add(headBall);
     headGroup.add(carrotNose);
     headGroup.add(buttonEyes);
+    //headGroup.add(curveOfMouth);
+    //headGroup.add(cylinder);
+    headGroup.add(mouthGroup);
+    headGroup.add(scarf);
     headGroup.add(topHat);
     headGroup.add(birthdayHat);
     headGroup.add(cone);
+
 
 
 
@@ -326,6 +412,17 @@ function createLighting() {
 
 }
 
+//wind animator
+function animate() {
+    requestAnimationFrame(animate);
+    var time = Date.now();
+    var strength = Math.cos(time/7000) * 20 + 40;
+    var windForce;
+    windForce.set(Math.sin(time/2000), Math.cos(time/3000), Math.sin(time/1000));
+    windForce.normalize();
+    windForce.multiplyScalar(strength);
+    simulate(time);
+}
 
 let scene;
 const main = () => {
