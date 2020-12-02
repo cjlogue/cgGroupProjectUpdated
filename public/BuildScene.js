@@ -1,27 +1,30 @@
 import * as THREE from './three.module.js';
 import {BoxBufferGeometry} from "./three.module.js";
 
-const displayNextHat =  (hatArray, hatIdx) => {
-    console.log("HatIdx = " + hatIndex);
-    console.log("first hat " +  hatArray[0].uuid);
+const displayNext =  (itemArray, itemIdx, key) => {
 
-    for (let i = 0; i < hatArray.length; i++) {
+    for (let i = 0; i < itemArray.length; i++) {
 
         //How to wrap back around to front of list?
         // if (hatArray.length + 1 === hatIdx + 1) {
         //     i = 0;
         // }
-        if (hatArray.length === hatIdx + 1) {
+        if (itemArray.length === itemIdx + 1) {
             break;
         }
-        if (i === hatIdx) {
-            hatArray[i].translateX(8);
+        if (i === itemIdx) {
+            itemArray[i].translateX(8);
         }
-        if (i === hatIdx + 1) {
-            hatArray[i].translateX(-8);
+        if (i === itemIdx + 1) {
+            itemArray[i].translateX(-8);
         }
     }
-    hatIndex = hatIdx + 1;
+    if (key === "hat") {
+        hatIndex = itemIdx + 1;
+    }
+    else if (key === "eye") {
+        eyeIndex = itemIdx + 1;
+    }
 
 }
 
@@ -112,6 +115,7 @@ const SnowBuddy = () => {
     buttonEyes.add(rightEye);
     //buttonEyes.translateY(0.5);
     buttonEyes.translateZ(1.5);
+    //buttonEyes.translateX(8);
 
     // 2) Glasses
     var leftGlass = new THREE.Mesh(new THREE.CylinderBufferGeometry(0.15, 0.15, 0.01), hatColor);
@@ -127,10 +131,24 @@ const SnowBuddy = () => {
     sunGlasses.add(rightGlass);
     sunGlasses.add(connector);
     sunGlasses.translateZ(1);
+    sunGlasses.translateX(8);
+
+    // 2) Torus Eyes
+
+    const leftTorus = new THREE.Mesh(new THREE.TorusKnotBufferGeometry(0.05, 0.015, 64, 8), redColor);
+    leftTorus.translateX(-0.6);
+    const rightTorus = new THREE.Mesh(new THREE.TorusKnotBufferGeometry(0.05, 0.015, 64, 8), redColor);
+
+    const torusEyes = new THREE.Group();
+    torusEyes.add(leftTorus);
+    torusEyes.add(rightTorus);
+    torusEyes.translateZ(1.5);
+    torusEyes.translateX(.3);
+    torusEyes.translateX(8);
 
     eyeArray[0] = buttonEyes;
-    eyeArray[1] = sunGlasses; 
-
+    eyeArray[1] = sunGlasses;
+    eyeArray[2] = torusEyes;
 
 
     //Hats
@@ -225,8 +243,9 @@ const SnowBuddy = () => {
     //NOSE
     headGroup.add(carrotNose);
     //EYES
-    //headGroup.add(buttonEyes);
+    headGroup.add(buttonEyes);
     headGroup.add(sunGlasses);
+    headGroup.add(torusEyes);
     //HATS
     headGroup.add(topHat);
     headGroup.add(birthdayHat);
@@ -236,15 +255,20 @@ const SnowBuddy = () => {
 
 
 
+    //INTERACTIONS
+    //hat
     const nextHat = document.getElementById('nextHat')
-    console.log("nextHat: "  + nextHat)
     if(nextHat) {
-        nextHat.addEventListener("click", () => displayNextHat(hatArray, hatIndex));
+        nextHat.addEventListener("click", () => displayNext(hatArray, hatIndex, "hat"));
         console.log(hatArray.length);
-
     }
 
-
+    //eyes
+    const nextEye = document.getElementById('nextEyes')
+    if(nextEye) {
+        nextEye.addEventListener("click", () => displayNext(eyeArray, eyeIndex, "eye"));
+        console.log(hatArray.length);
+    }
 
 
 
