@@ -28,6 +28,34 @@ const displayNext =  (itemArray, itemIdx, key) => {
 
 }
 
+const displayPrevious =  (itemArray, itemIdx, key) => {
+    console.log("display previous hit")
+
+    for (let i = 0; i < itemArray.length; i++) {
+
+        //How to wrap back around to front of list?
+        // if (hatArray.length + 1 === hatIdx + 1) {
+        //     i = 0;
+        // }
+        if (-1 === itemIdx - 1) {
+            break;
+        }
+        if (i === itemIdx) {
+            itemArray[i].translateX(8);
+        }
+        if (i === itemIdx - 1) {
+            itemArray[i].translateX(-8);
+        }
+    }
+    if (key === "hat") {
+        hatIndex = itemIdx - 1;
+    }
+    else if (key === "eye") {
+        eyeIndex = itemIdx - 1;
+    }
+
+}
+
 
 var hatIndex;
 var eyeIndex;
@@ -67,12 +95,28 @@ const SnowBuddy = () => {
     const birthdayPuff = new THREE.MeshPhongMaterial({
         color: 0xdc57e2});
 
+    //Textures (implement once on Heroku?)
     const loader = new THREE.TextureLoader();
+
     const birthdayHatTexture = new THREE.MeshBasicMaterial(  {map: loader.load("./bdayHat2.jpg")});
+
     const HatTexture = new THREE.MeshBasicMaterial(  {map: loader.load("./WinterBirthdayHat.jpg")});
+
     const blueDots = new THREE.MeshBasicMaterial({map: loader.load("./BlueDots.bmp")});
 
-    const materials = [birthdayHatTexture, HatTexture, blueDots];
+    const bananaShirt = new THREE.MeshBasicMaterial({map: loader.load("./Textures/BananaShirt.jpg")});
+
+    const cowShirt = new THREE.MeshBasicMaterial({map: loader.load("./Textures/cowPrintShirt.jpg")});
+
+    const hawaiianShirt = new THREE.MeshBasicMaterial({map: loader.load("./Textures/HawaiianShirt.jpg")});
+
+    const winterSweater1 = new THREE.MeshBasicMaterial({map: loader.load("./Textures/winterSweater1.jpg")});
+
+    const winterSweater2 = new THREE.MeshBasicMaterial({map: loader.load("./Textures/winterSweater2.jpg")});
+
+
+    const materials = [birthdayHatTexture, HatTexture, blueDots, bananaShirt,
+        cowShirt, hawaiianShirt, winterSweater1, winterSweater2];
 
 
 
@@ -135,9 +179,9 @@ const SnowBuddy = () => {
 
     // 2) Torus Eyes
 
-    const leftTorus = new THREE.Mesh(new THREE.TorusKnotBufferGeometry(0.05, 0.015, 64, 8), redColor);
+    const leftTorus = new THREE.Mesh(new THREE.TorusKnotBufferGeometry(0.06, 0.015, 64, 8), redColor);
     leftTorus.translateX(-0.6);
-    const rightTorus = new THREE.Mesh(new THREE.TorusKnotBufferGeometry(0.05, 0.015, 64, 8), redColor);
+    const rightTorus = new THREE.Mesh(new THREE.TorusKnotBufferGeometry(0.06, 0.015, 64, 8), redColor);
 
     const torusEyes = new THREE.Group();
     torusEyes.add(leftTorus);
@@ -263,10 +307,22 @@ const SnowBuddy = () => {
         console.log(hatArray.length);
     }
 
+    const previousHat = document.getElementById('previousHat')
+    if(previousHat) {
+        previousHat.addEventListener("click", () => displayPrevious(hatArray, hatIndex, "hat"));
+        console.log("previous hat hit");
+    }
+
     //eyes
     const nextEye = document.getElementById('nextEyes')
     if(nextEye) {
         nextEye.addEventListener("click", () => displayNext(eyeArray, eyeIndex, "eye"));
+        console.log(hatArray.length);
+    }
+
+    const previousEye = document.getElementById('previousEyes')
+    if(previousEye) {
+        previousEye.addEventListener("click", () => displayPrevious(eyeArray, eyeIndex, "eye"));
         console.log(hatArray.length);
     }
 
@@ -339,7 +395,6 @@ const SnowBuddy = () => {
     middleBallGroup.add(button3);
     middleBallGroup.add(leftArm);
     middleBallGroup.add(rightArm);
-
 
 
 

@@ -2,11 +2,18 @@ body {
     background-color: #c4f1f6;
 }
  canvas{
-    width: 70%;
-    height: 70%;
+    width: 60%;
+    height: 60%;
     display: block;
     background: url(https://media1.giphy.com/media/UTkht9eZ4Ot68/source.gif) no-repeat center center;
     background-size: cover;
+     /*position: relative;*/
+     /*top:0;*/
+     /*bottom: 0;*/
+     /*left: 0;*/
+     /*right: 0;*/
+     /*margin:auto;*/
+
 
 }
 h1 {
@@ -14,6 +21,14 @@ h1 {
     font-family: Blenny;
     color: steelblue;
     font-size: xx-large;
+}
+
+h2 {
+    text-align: center;
+    display: inline-table;
+    font-family: "Baloo Bhaijaan";
+    color: steelblue;
+    //font-size: xx-large;
 }
 
 a {
@@ -27,15 +42,15 @@ a:hover {
     color: steelblue;
 }
 
-.previous {
-    background-color: steelblue;
-    color: white;
-    border-radius: 40%;
-}
+/*.previousHat {*/
+/*    background-color: steelblue;*/
+/*    color: white;*/
+/*    border-radius: 40%;*/
+/*}*/
 
-.next {
-    background-color: steelblue;
-    color: white;
-    border-radius: 40%;
-}
+/*.nextHat {*/
+/*    background-color: steelblue;*/
+/*    color: white;*/
+/*    border-radius: 40%;*/
+/*}*/
 
