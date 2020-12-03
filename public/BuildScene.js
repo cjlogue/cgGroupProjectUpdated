@@ -117,7 +117,7 @@ const SnowBuddy = () => {
     buttonEyes.translateZ(1.5);
 
 
-
+// update 
     //Hats
 
     // 1) Top Hat
